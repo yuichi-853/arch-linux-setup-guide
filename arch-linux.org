@@ -1,0 +1,206 @@
+#+TITLE: Arch Linux Setup Reference
+
+* Table of Contents :TOC:
+  - [[#arch-installation][Arch Installation]]
+    - [[#storage][Storage]]
+    - [[#host-name][Host Name]]
+  - [[#settings--installation][Settings & Installation]]
+    - [[#connecting-to-wi-fi][Connecting to Wi-fi]]
+    - [[#enable-left-alt-key-as-meta-key][Enable left alt key as meta key]]
+    - [[#set-a-shortcut-to-open-the-terminal][Set a shortcut to open the terminal]]
+    - [[#remap-the-annoying-capslock-as-the-control-key][Remap the "annoying" Capslock as the Control key]]
+    - [[#install-yay-package-manager][Install yay (Package manager)]]
+    - [[#install-less-xclip-make-unzip--gcc][Install less, xclip, make, unzip & gcc]]
+    - [[#git-configurations][Git configurations]]
+    - [[#install-fonts][Install fonts]]
+    - [[#install-firefox][Install Firefox]]
+    - [[#enable-fractional-screen][Enable Fractional Screen]]
+    - [[#enable-japanese-input][Enable Japanese Input]]
+    - [[#install-multipul-useful-packages][Install Multipul Useful packages]]
+    - [[#setup-neoVim-the-best-text-editor-ever][Setup NeoVim (The best text editor ever)]]
+
+* Arch Installation
+  Follow [[https://www.youtube.com/watch?v=FxeriGuJKTM][this instruction video]].
+
+** Storage
+   ext4
+
+** Host Name
+   Don't set it to "Arch Linux"! It's PC's identication name, so it should be unique like "UserName-ThinkPad-E14-G6".
+
+
+* Settings & Installation
+** Connecting to Wi-fi
+   When the installation is complete, connect it to Wi-fi.
+
+** Enable left alt key as meta key
+   Settings > Keyboard > Alternate Characters Key > Change to Left Alt
+
+** Set a shortcut to open the terminal"
+   Keyboard > View and Customize Shortcuts
+   - Name: terminal
+   - Command: kgx
+   - Shortcut: Ctrl+Alt+T
+
+** Remap the "annoying" Capslock as the Control key
+   Tweaks > Keyboard > Aditional Layout Options > Ctrl position > Caps Lock as Ctrl
+
+
+** Install yay (Package manager)
+   Install the required base-devel and git.
+   #+begin_src bash
+   sudo pacman -S base-devel git
+   #+end_src
+
+   Clone the yay repo. Once done, switch to the cloned directory.
+   #+begin_src bash
+   git clone https://aur.archlinux.org/yay.git
+   cd yay
+   #+end_src
+
+   Build the package from the following command.
+   #+begin_src bash
+   makepkg -si
+   #+end_src
+
+   Once the process finishes, verify that the yay has been installed successfully.
+   #+begin_src bash
+   yay --version
+   #+end_src
+
+
+** Install less, xclip, make, unzip & gcc
+   #+begin_src bash
+   sudo pacman -S less xclip make unzip gcc
+   #+end_src
+
+
+** Git configurations
+   #+begin_src bash
+   git config --global user.name "John Doe"
+   git config --global user.email "johndoe@example.com"
+   git config --list
+   #+end_src
+
+   Increase Git's http buffer size to 1gb from the following command.
+   #+begin_src bash
+   git config --global http.postBuffer 1048576000
+   #+end_src
+
+
+** Install fonts
+   #+begin_src bash
+   sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra
+   #+end_src
+
+
+** Install Firefox
+   #+begin_src bash
+   sudo pacman -S firefox
+   #+end_src
+
+
+** Enable Fractional Screen
+   #+begin_src bash
+   gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+   #+end_src
+
+
+** Enable Japanese Input
+*** 1. Edit Locale
+    Locale is in /etc/locale.gen file.
+    #+begin_src bash
+    cd ../../etc
+    sudo vim locale.gen
+    #+end_src
+
+    Then, uncomment the `ja_JP, UTF-8` part.
+
+    Type `:wq` in nomal mode to quit.
+
+    Afterthat, regenerate locale.
+    #+begin_src bash
+    locale-gen
+    #+end_src
+
+*** 2. Install Fcitx5 (IMF: Imput Method Framework)
+    Install fcitx5-im & GUI config tool.
+    #+begin_src bash
+    sudo pacman -S fcitx5-im fcitx5-configtool
+    #+end_src
+    At the "Repository extra" prompt, just hit `Enter` (select all). 
+
+*** 3. Set some environmental variables.
+    #+begin_src bash
+    sudo vim environment
+    #+end_src
+
+    Then add these three environmental variables.
+    #+begin_src eshnv
+    GTK_IM_MODULE=fcitx
+    QT_IM_MODULE=fcitx
+    XMODIFIERS=@im=fcitx
+    #+end_src
+
+*** 4. Install Mozc (IME: Input Method Editor)
+    #+begin_src bash
+    sudo pacman -S fcitx5-mozc
+    #+end_src
+
+*** 5. Set Mozc as an input method
+    Launch the setup GUI application.
+    #+begin_src bash
+    cd ~
+    fcitx5-config tool
+    #+end_src
+
+    Search for the input method `Mozc`, select it, and then click the `Apply` button.
+
+*** 6. Apply the changes
+    To apply the changes, log out of your computer and log back in. This will ensure that all the new settings are correctly loaded.
+
+** Install Multipul Useful packages
+*** With yay
+    - Brave: For those who prefer to watch videos without, let’s say, distractions.
+    - Strawberry: An amazing music player
+    #+begin_src bash
+    yay -S brave-bin strawberry
+    #+end_src
+    At the "Packages to cleanBuild" prompt, select `All`, and at the "Diffs to show" prompt, select `None`.
+
+*** With pacman
+    - VLC: A rock-solid media player
+    #+begin_src bash
+    sudo pacman -S vlc
+    #+end_src
+
+** Setup NeoVim (The best text editor ever)
+*** Install nerd-font
+    You can download the .zip file from [[https://www.nerdfonts.com/][here]] (for example, the 'JetBrainsMono' font). After downloading, you can extract it.
+**** Unzip the file
+     #+begin_src bash
+     unzip ~/Downloads/jetbrainsmono.zip -d ~/Downloads/jetbrainsmono
+     #+end_src
+
+**** Create the font directory
+     #+begin_src bash
+     mkdir -p ~/local/share/fonts
+     #+end_src
+
+**** Move the extracted font folder to the correct location
+     #+begin_src bash
+     mv ~/Downloads/jetbrainsmono ~/.local/share/fonts/
+     #+end_src
+
+**** Update the font cache
+     #+begin_src bash
+     sudo fc-cache -fv
+     #+end_src
+
+*** Install NeoVim
+    #+begin_src bash
+    sudo pacman -S neovim
+    #+end_src
+
+    Boom! It's done!
+    Welcome to Arch Linux!!!
