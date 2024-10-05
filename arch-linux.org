@@ -151,7 +151,7 @@
     Launch the setup GUI application.
     #+begin_src bash
     cd ~
-    fcitx5-config tool
+    fcitx5-configtool
     #+end_src
 
     Search for the input method `Mozc`, select it, and then click the `Apply` button.
